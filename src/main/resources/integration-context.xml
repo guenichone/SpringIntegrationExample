@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:integration="http://www.springframework.org/schema/integration"
+	xmlns:file="http://www.springframework.org/schema/integration/file"
+	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+       http://www.springframework.org/schema/jee
+       http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-3.2.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task-3.2.xsd
+       http://www.springframework.org/schema/jms 
+       http://www.springframework.org/schema/jms/spring-jms.xs
+       http://www.springframework.org/schema/integration
+       http://www.springframework.org/schema/integration/spring-integration.xsd
+       http://www.springframework.org/schema/integration/file
+	   http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+	   http://www.springframework.org/schema/integration/jms
+       http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+       http://www.springframework.org/schema/integration/ws
+       http://www.springframework.org/schema/integration/ws/spring-integration-ws.xsd
+       http://www.springframework.org/schema/integration/http
+       http://www.springframework.org/schema/integration/http/spring-integration-http.xsd"
+       >
+
+    <!-- *** INBOUD ADAPTER *** -->
+
+    <!-- JMS -->
+    <int-jms:inbound-channel-adapter id="jmsIn" destination="mailbox-destination" channel="global-message-validator" />
+    
+    <!-- REST -->
+    <int-http:inbound-channel-adapter id="httpIn" path="/hello1/" supported-methods="GET, POST" channel="global-message-validator" />
+    
+    <!-- SOAP -->
+    <!-- TODO -->
+    
+    <!-- *** GLOBAL VALIDATION *** -->
+
+    <!--    <integration:logging-channel-adapter id="atlasLoggerOut" level="INFO" expression="'Received file on atlas on dir: ${HELIOS_BASE}/${dir.atlasUpload:upload/atlas}/${interface.in:in}'" channel="atlasIn"/>-->
+    <!--<file:file-to-string-transformer input-channel="atlasIn" output-channel="atlasStrings"/>-->
+
+    <integration:channel id="global-message-validator"/>
+
+    <!-- TODO : Pooler ?-->
+    <integration:service-activator input-channel="global-message-validator"
+                                   output-channel="global-message-processor"
+                                   ref="globalValidator"/>
+
+    <integration:channel id="global-message-processor"/>
+    
+    <integration:service-activator input-channel="global-message-processor"
+                                   ref="processorDispatcher"/>
+
+<!--     <integration:header-value-router input-channel="atlasPostProcess" header-name="executionStatus"> -->
+<!--         <integration:mapping value="SUCCESS" channel="filesAtlasOut" /> -->
+<!--         <integration:mapping value="FAILURE" channel="filesAtlasErr" /> -->
+<!--     </integration:header-value-router>-->
+
+    <!-- *** OUTBOUND ADAPTER *** -->
+    
+    <int-jms:outbound-channel-adapter id="jmsOut" destination="outQueue" channel="exampleChannel"/>
+   
+    <!-- *** BEANS DECLARATION *** -->
+    <bean id="globalValidator" class="org.barrak.springintegration.enpoints.validator.GlobalMessageValidatorImpl" />
+    <bean id="processorDispatcher" class="org.barrak.springintegration.endpoints.processor.SRIProcessorDispatcherImpl" />
+    
+    
+</beans>

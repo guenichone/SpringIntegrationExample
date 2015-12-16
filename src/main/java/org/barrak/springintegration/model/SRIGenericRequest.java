@@ -1,13 +1,14 @@
 package org.barrak.springintegration.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
- * @author Emilien Guenichon <emilien.guenichon@cgi.com>
+ * @author Emilien Guenichon <emilien.guenichon@post.lu>
  */
-public class SRIGenericRequest {
+public class SRIGenericRequest implements Serializable {
 
     private String id;
     private Map<String, Object> attributes;

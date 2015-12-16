@@ -4,7 +4,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import org.barrak.springintegration.Application;
-import org.barrak.springintegration.endpoints.input.jms.JMSRegistryName;
+import org.barrak.springintegration.registry.JMSRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
- * @author Emilien Guenichon <emilien.guenichon@cgi.com>
+ * @author Emilien Guenichon <emilien.guenichon@post.lu>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Application.class)
@@ -26,7 +26,7 @@ public class JMSEndpointTest {
     private ApplicationContext ctx;
     
     @Test
-    public void testJMSEndpoint() {
+    public void testJMSEndpoint() throws InterruptedException {
         // Send a message
         MessageCreator messageCreator = new MessageCreator() {
             @Override
@@ -36,9 +36,9 @@ public class JMSEndpointTest {
         };
         JmsTemplate jmsTemplate = ctx.getBean(JmsTemplate.class);
         System.out.println("Sending a new message.");
-        jmsTemplate.send(JMSRegistryName.JMS_MAIN, messageCreator);
+        jmsTemplate.send(JMSRegistry.JMS_MAIN, messageCreator);
         
-        
+        Thread.sleep(60000);
     }
     
 }

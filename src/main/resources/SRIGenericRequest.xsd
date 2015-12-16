@@ -1,0 +1,31 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:esbdt="http://webservice.springintegration.barrak.org/esbdt/schemas"
+           targetNamespace="http://webservice.springintegration.barrak.org/esbdt/schemas" 
+           elementFormDefault="qualified">
+
+    <xs:complexType name="SRIGenericRequest2">
+        <xs:sequence>
+            <xs:element name="attr1" type="xs:string" />
+            <xs:element name="attr2" type="xs:int" />
+            <xs:element name="attr3" type="xs:string" />
+            <xs:element name="attr4" type="xs:int" />
+            <xs:element name="attr5" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="requestSRIServiceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="request" type="esbdt:SRIGenericRequest2"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="requestSRIServiceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="response" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
